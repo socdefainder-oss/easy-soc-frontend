@@ -3,207 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Easy SOC - Dashboard</title>
+  <title>Easy SOC – Dashboard</title>
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-
-  <!-- Ícones -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
     body {
       margin: 0;
-      font-family: "Inter", sans-serif;
-      background: #0f1115;
-      color: #e4e4e4;
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fb;
       display: flex;
-      overflow-x: hidden;
     }
 
-    /* SIDEBAR */
+    /* ----------------------- SIDEBAR ----------------------- */
     .sidebar {
       width: 230px;
-      background: #0a0c0f;
       height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      padding: 25px 0;
+      background: #1a1f36;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      border-right: 1px solid #1b1e24;
+      position: fixed;
+      left: 0;
+      top: 0;
     }
 
     .sidebar h2 {
-      text-align: center;
-      margin-bottom: 40px;
+      margin-top: 0;
+      margin-bottom: 25px;
       font-size: 22px;
-      font-weight: 700;
-      color: #4da3ff;
-    }
-
-    .menu-item {
-      padding: 14px 25px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      color: #bcbcbc;
-      font-size: 15px;
-      transition: 0.2s ease;
-    }
-
-    .menu-item i {
-      font-size: 18px;
-      width: 22px;
-    }
-
-    .menu-item:hover {
-      background: #14171c;
-      color: white;
-    }
-
-    .menu-item.active {
-      background: #1d232c;
-      color: white;
+      text-align: center;
       font-weight: 600;
     }
 
-    /* CONTEÚDO PRINCIPAL */
-    .main-content {
-      margin-left: 230px;
-      padding: 25px;
-      width: calc(100% - 230px);
+    .sidebar a {
+      padding: 12px;
+      margin-bottom: 8px;
+      color: #c7d1e8;
+      text-decoration: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: block;
+      font-size: 15px;
+      transition: 0.2s;
     }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #14171c;
-      padding: 15px 25px;
-      border-radius: 10px;
+    .sidebar a:hover {
+      background: #2a3048;
+      color: white;
+    }
+
+    .sidebar .active {
+      background: #4c8bfd;
+      color: white;
+    }
+
+    /* ----------------------- CONTEÚDO ----------------------- */
+    .content {
+      margin-left: 250px;
+      padding: 25px;
+      width: calc(100% - 250px);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 26px;
       margin-bottom: 25px;
     }
 
-    .header span {
-      font-size: 20px;
-      font-weight: 600;
-      color: #4da3ff;
-    }
-
-    .logout-btn {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 6px;
-      background: #4da3ff;
-      color: #fff;
-      cursor: pointer;
-      font-weight: 600;
-      transition: 0.2s ease;
-    }
-
-    .logout-btn:hover {
-      background: #1f8dff;
-    }
-
-    /* CARDS */
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
     }
 
     .card {
-      background: #14171c;
-      padding: 25px;
+      background: white;
+      padding: 20px;
       border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       text-align: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-      transition: 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
     }
 
     .card h3 {
       margin: 0;
-      color: #99a1ac;
-      font-weight: 500;
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
     }
 
     .card .value {
-      margin-top: 12px;
       font-size: 32px;
-      font-weight: 700;
-      color: #4da3ff;
+      font-weight: bold;
+      color: #0066ff;
     }
 
-    /* GRAFICO */
     canvas {
-      background: #14171c;
-      padding: 20px;
+      background: white;
+      margin-top: 20px;
+      padding: 25px;
       border-radius: 12px;
-      margin-top: 30px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
-    #loading {
-      font-size: 20px;
-      text-align: center;
-      padding: 40px;
-      color: #bcbcbc;
+    /* Botão Sair */
+    .logout {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      background: #ff4757;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
     }
+
+    .logout:hover {
+      background: #d93645;
+    }
+
   </style>
 </head>
-
 <body>
 
-  <!-- SIDEBAR -->
+  <!-- ================= SIDEBAR ================= -->
   <div class="sidebar">
     <h2>Easy SOC</h2>
 
-    <div class="menu-item active"><i class="fa-solid fa-chart-line"></i> Dashboard</div>
-    <div class="menu-item"><i class="fa-solid fa-computer"></i> Máquinas</div>
-    <div class="menu-item"><i class="fa-solid fa-shield-halved"></i> Vulnerabilidades</div>
-    <div class="menu-item"><i class="fa-solid fa-triangle-exclamation"></i> Incidentes</div>
-    <div class="menu-item"><i class="fa-solid fa-gear"></i> Configurações</div>
-
-    <div style="margin-top:auto;">
-      <div class="menu-item" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Sair</div>
-    </div>
+    <a id="menu-dashboard" class="active">Dashboard</a>
+    <a id="menu-maquinas">Máquinas</a>
+    <a id="menu-incidentes">Incidentes</a>
+    <a id="menu-config">Configurações</a>
+    <a id="menu-sair">Sair</a>
   </div>
 
-  <!-- CONTEÚDO -->
-  <div class="main-content">
+  <!-- ================= CONTEÚDO ================= -->
+  <div class="content">
+    <h1>Visão Geral</h1>
 
-    <div class="header">
-      <span>Dashboard Geral</span>
-    </div>
-
-    <div id="loading">Carregando dados...</div>
-
-    <div id="dashboard" style="display:none;">
-
-      <div class="cards">
-        <div class="card"><h3>Máquinas Totais</h3><div id="card-total" class="value">0</div></div>
-        <div class="card"><h3>Máquinas Seguras</h3><div id="card-seguras" class="value">0</div></div>
-        <div class="card"><h3>Vulnerabilidades</h3><div id="card-vulns" class="value">0</div></div>
-        <div class="card"><h3>Riscos</h3><div id="card-riscos" class="value">0</div></div>
-        <div class="card"><h3>Incidentes</h3><div id="card-incidentes" class="value">0</div></div>
+    <div class="cards">
+      <div class="card">
+        <h3>Máquinas Totais</h3>
+        <div id="c-total" class="value">0</div>
       </div>
 
-      <canvas id="chartVRI" height="130"></canvas>
+      <div class="card">
+        <h3>Máquinas Seguras</h3>
+        <div id="c-seguras" class="value">0</div>
+      </div>
 
+      <div class="card">
+        <h3>Vulnerabilidades</h3>
+        <div id="c-vuln" class="value">0</div>
+      </div>
+
+      <div class="card">
+        <h3>Riscos</h3>
+        <div id="c-riscos" class="value">0</div>
+      </div>
+
+      <div class="card">
+        <h3>Incidentes</h3>
+        <div id="c-inc" class="value">0</div>
+      </div>
     </div>
 
+    <canvas id="grafico"></canvas>
   </div>
 
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/dashboard.js"></script>
+
+  <!-- ====== SCRIPTS DA SIDEBAR ====== -->
+  <script>
+    document.getElementById("menu-dashboard").addEventListener("click", () => {
+      window.location.href = "dashboard.html";
+    });
+
+    document.getElementById("menu-maquinas").addEventListener("click", () => {
+      window.location.href = "maquinas.html"; // vamos criar depois
+    });
+
+    document.getElementById("menu-incidentes").addEventListener("click", () => {
+      alert("A página de incidentes será adicionada em breve.");
+    });
+
+    document.getElementById("menu-config").addEventListener("click", () => {
+      alert("Configurações serão adicionadas em breve.");
+    });
+
+    document.getElementById("menu-sair").addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "index.html";
+    });
+  </script>
 
 </body>
 </html>
