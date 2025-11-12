@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Easy SOC</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: #f0f2f5;
+    }
+
+    .header {
+      background: #0d6efd;
+      padding: 20px;
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform .2s ease, box-shadow .2s ease;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .card .value {
+      margin-top: 10px;
+      font-size: 32px;
+      font-weight: 700;
+      color: #0d6efd;
+    }
+
+    #loading {
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+      font-size: 22px;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .charts {
+      padding: 20px;
+    }
+
+    canvas {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <span>Easy SOC – Dashboard</span>
+    <button onclick="logout()" style="padding: 8px 15px; border: none; background:#fff; color:#0d6efd; border-radius:6px; font-weight:600; cursor:pointer">
+      Sair
+    </button>
+  </div>
+
+  <div id="loading">Carregando dados...</div>
+
+  <div id="dashboard" style="display:none;">
+    <div class="cards">
+      <div class="card">
+        <h3>Máquinas Totais</h3>
+        <div id="card-total" class="value">0</div>
+      </div>
+
+      <div class="card">
+        <h3>Máquinas Seguras</h3>
+        <div id="card-seguras" class="value">0</div>
+      </div>
+
+      <div class="card">
+        <h3>Vulnerabilidades</h3>
+        <div id="card-vulns" class="value">0</div>
+      </div>
+
+      <div class="card">
+        <h3>Riscos</h3>
+        <div id="card-riscos" class="value">0</div>
+      </div>
+
+      <div class="card">
+        <h3>Incidentes</h3>
+        <div id="card-incidentes" class="value">0</div>
+      </div>
+    </div>
+
+    <div class="charts">
+      <canvas id="chartVRI" height="130"></canvas>
+    </div>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Dashboard Script -->
+  <script src="js/dashboard.js"></script>
+
+</body>
+</html>
