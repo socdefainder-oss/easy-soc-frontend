@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Easy SOC — Incidentes</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fb;
+      display: flex;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 230px;
+      height: 100vh;
+      background: #1a1f36;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+    }
+
+    .sidebar a {
+      padding: 12px;
+      margin-bottom: 8px;
+      color: #c7d1e8;
+      text-decoration: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: block;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .sidebar .active {
+      background: #4c8bfd;
+      color: white;
+    }
+
+    .content {
+      margin-left: 250px;
+      padding: 25px;
+      width: calc(100% - 250px);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    table {
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      font-size: 15px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f3f9;
+      font-weight: 600;
+    }
+
+    .sev-alta { color: #dc3545; font-weight: bold; }
+    .sev-media { color: #ffc107; font-weight: bold; }
+    .sev-baixa { color: #28a745; font-weight: bold; }
+
+    .busca-filtros {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    input, select {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    input {
+      min-width: 260px;
+    }
+
+    /* MODAL */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 480px;
+      max-width: 95vw;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .modal h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .close-btn {
+      background: #dc3545;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      float: right;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      background: #f0f3f9;
+      margin-left: 6px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>Easy SOC</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="maquinas.html">Máquinas</a>
+    <a class="active">Incidentes</a>
+    <a id="menu-config">Configurações</a>
+    <a id="menu-sair">Sair</a>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="content">
+    <h1>Incidentes</h1>
+
+    <div class="busca-filtros">
+      <input id="busca-inc" type="text" placeholder="Pesquisar por máquina, status, severidade...">
+      <select id="filtro-sev">
+        <option value="todas">Todas as severidades</option>
+        <option value="alta">Alta</option>
+        <option value="media">Média</option>
+        <option value="baixa">Baixa</option>
+      </select>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Incidente</th>
+          <th>Máquina</th>
+          <th>Severidade</th>
+          <th>Risco</th>
+          <th>Última atualização</th>
+          <th>Detalhes</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-incidentes"></tbody>
+    </table>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal-bg" class="modal-bg">
+    <div class="modal">
+      <button class="close-btn" onclick="fecharModal()">Fechar</button>
+      <h2>Detalhes do Incidente</h2>
+      <div id="modal-conteudo"></div>
+    </div>
+  </div>
+
+  <script src="js/incidentes.js"></script>
+
+  <script>
+    // Logout simples
+    document.getElementById("menu-sair").addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "index.html";
+    });
+
+    document.getElementById("menu-config").addEventListener("click", () => {
+      alert("Configurações serão adicionadas em breve.");
+    });
+  </script>
+
+</body>
+
+</html>
