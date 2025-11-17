@@ -6,22 +6,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Easy SOC – Dashboard</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg: #f4f6fb;
+      --card-bg: #ffffff;
+      --primary: #1a73e8;
+      --primary-dark: #0f57b3;
+      --sidebar-bg: #1a1f36;
+      --text-title: #1a1f36;
+      --text-sub: #4b587c;
+    }
+
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #f5f7fb;
+      background: var(--bg);
     }
 
-    /* ------------------------- MENU SUPERIOR MOBILE ------------------------- */
+    /* ---------------------- MENU MOBILE ---------------------- */
     .topbar {
       width: 100%;
       height: 60px;
-      background: #1a1f36;
+      background: var(--sidebar-bg);
       color: white;
-      display: none; /* aparece só no mobile */
+      display: none;
       align-items: center;
       padding: 0 20px;
       box-sizing: border-box;
@@ -38,13 +48,13 @@
       font-weight: 600;
     }
 
-    /* ------------------------- SIDEBAR DESKTOP ------------------------- */
+    /* ---------------------- SIDEBAR ---------------------- */
     .sidebar {
-      width: 230px;
-      background: #1a1f36;
+      width: 240px;
+      background: var(--sidebar-bg);
       color: white;
       height: 100vh;
-      padding: 20px;
+      padding: 25px 20px;
       box-sizing: border-box;
       position: fixed;
       left: 0;
@@ -55,17 +65,19 @@
 
     .sidebar h2 {
       text-align: center;
-      margin-top: 0;
-      margin-bottom: 25px;
+      margin-bottom: 35px;
+      letter-spacing: 1px;
+      font-size: 22px;
     }
 
     .sidebar a {
-      padding: 12px;
+      padding: 14px;
       display: block;
       text-decoration: none;
       color: #c7d1e8;
-      border-radius: 6px;
-      margin-bottom: 8px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 15px;
       transition: 0.2s;
     }
 
@@ -75,11 +87,11 @@
     }
 
     .sidebar .active {
-      background: #4c8bfd;
+      background: var(--primary);
       color: white;
     }
 
-    /* ------------------------- OVERLAY MOBILE ------------------------- */
+    /* ---------------------- OVERLAY MOBILE ---------------------- */
     .overlay {
       position: fixed;
       top: 0;
@@ -91,16 +103,21 @@
       z-index: 900;
     }
 
-    /* ------------------------- CONTEÚDO ------------------------- */
+    /* ---------------------- CONTEÚDO ---------------------- */
     .content {
-      margin-left: 250px;
-      padding: 25px;
+      margin-left: 260px;
+      padding: 30px;
     }
 
     h1 {
-      margin-top: 0;
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-title);
+      margin-bottom: 25px;
     }
 
+    /* ---------------------- CARDS EXECUTIVOS ---------------------- */
     .cards {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -108,42 +125,64 @@
     }
 
     .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      background: var(--card-bg);
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 140px;
+      transition: 0.2s;
     }
 
-    .card h3 {
-      margin: 0;
-      margin-bottom: 10px;
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
 
-    .card .value {
-      font-size: 32px;
-      font-weight: bold;
-      color: #0066ff;
+    .card-icon {
+      font-size: 30px;
+      margin-bottom: 8px;
+      color: var(--primary);
     }
 
-    canvas {
+    .card-title {
+      font-size: 15px;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+
+    .card-value {
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    /* CARD MAIOR - INCIDENTES */
+    .card-large {
+      grid-column: span 4;
+      height: 120px;
+    }
+
+    /* ---------------------- GRÁFICO ---------------------- */
+    .chart-box {
       background: white;
       padding: 25px;
-      border-radius: 12px;
-      margin-top: 30px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      border-radius: 16px;
+      margin-top: 35px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    /* ============================== MOBILE ============================== */
+    /* ---------------------- MOBILE ---------------------- */
     @media (max-width: 820px) {
 
       .topbar {
         display: flex;
       }
 
-      /* Sidebar vira menu */
       .sidebar {
-        transform: translateX(-250px);
+        transform: translateX(-260px);
       }
 
       .sidebar.open {
@@ -156,25 +195,19 @@
 
       .content {
         margin-left: 0 !important;
-        padding: 15px;
+        padding: 20px;
       }
 
       .cards {
         grid-template-columns: 1fr;
-        gap: 12px;
       }
 
-      .card .value {
-        font-size: 26px;
+      .card-large {
+        grid-column: span 1 !important;
       }
 
       h1 {
-        font-size: 22px;
         text-align: center;
-      }
-
-      canvas {
-        padding: 15px;
       }
     }
   </style>
@@ -182,13 +215,12 @@
 
 <body>
 
-  <!-- TOPBAR MOBILE -->
+  <!-- MENU SUPERIOR MOBILE -->
   <div class="topbar">
     <div class="hamburger" onclick="abrirMenu()">☰</div>
     <div class="topbar-title">Easy SOC</div>
   </div>
 
-  <!-- OVERLAY MOBILE -->
   <div class="overlay" id="overlay" onclick="fecharMenu()"></div>
 
   <!-- SIDEBAR -->
@@ -207,36 +239,47 @@
 
   <!-- CONTEÚDO -->
   <div class="content">
-    <h1>Visão Geral</h1>
+
+    <h1>Visão Geral Executiva</h1>
 
     <div class="cards">
+
       <div class="card">
-        <h3>Máquinas Totais</h3>
-        <div id="c-total" class="value">0</div>
+        <div class="card-icon">🖥️</div>
+        <div class="card-title">Máquinas Totais</div>
+        <div id="c-total" class="card-value">0</div>
       </div>
 
       <div class="card">
-        <h3>Máquinas Seguras</h3>
-        <div id="c-seguras" class="value">0</div>
+        <div class="card-icon">🔐</div>
+        <div class="card-title">Máquinas Seguras</div>
+        <div id="c-seguras" class="card-value">0</div>
       </div>
 
       <div class="card">
-        <h3>Vulnerabilidades</h3>
-        <div id="c-vuln" class="value">0</div>
+        <div class="card-icon">⚠️</div>
+        <div class="card-title">Vulnerabilidades</div>
+        <div id="c-vuln" class="card-value">0</div>
       </div>
 
       <div class="card">
-        <h3>Riscos</h3>
-        <div id="c-riscos" class="value">0</div>
+        <div class="card-icon">🔥</div>
+        <div class="card-title">Riscos</div>
+        <div id="c-riscos" class="card-value">0</div>
       </div>
 
-      <div class="card">
-        <h3>Incidentes</h3>
-        <div id="c-inc" class="value">0</div>
+      <div class="card card-large">
+        <div class="card-icon">🚨</div>
+        <div class="card-title">Incidentes</div>
+        <div id="c-inc" class="card-value">0</div>
       </div>
+
     </div>
 
-    <canvas id="grafico"></canvas>
+    <div class="chart-box">
+      <canvas id="grafico"></canvas>
+    </div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
