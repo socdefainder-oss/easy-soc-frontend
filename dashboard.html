@@ -1,4 +1,3 @@
-dashboard.hml
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -146,6 +145,7 @@ dashboard.hml
       height: 150px;
       transition: 0.2s;
       text-align: center;
+      cursor: pointer;
     }
 
     .card:hover {
@@ -243,31 +243,31 @@ dashboard.hml
 
       <div class="cards">
 
-        <div class="card">
+        <div id="card-total" class="card">
           <div class="card-icon">🖥️</div>
           <div class="card-title">Máquinas Totais</div>
           <div id="c-total" class="card-value">0</div>
         </div>
 
-        <div class="card">
+        <div id="card-seguras" class="card">
           <div class="card-icon">🔐</div>
           <div class="card-title">Máquinas Seguras</div>
           <div id="c-seguras" class="card-value">0</div>
         </div>
 
-        <div class="card">
+        <div id="card-vuln" class="card">
           <div class="card-icon">⚠️</div>
           <div class="card-title">Vulnerabilidades</div>
           <div id="c-vuln" class="card-value">0</div>
         </div>
 
-        <div class="card">
+        <div id="card-riscos" class="card">
           <div class="card-icon">🔥</div>
           <div class="card-title">Riscos</div>
           <div id="c-riscos" class="card-value">0</div>
         </div>
 
-        <div class="card">
+        <div id="card-inc" class="card">
           <div class="card-icon">🚨</div>
           <div class="card-title">Incidentes</div>
           <div id="c-inc" class="card-value">0</div>
@@ -296,7 +296,7 @@ dashboard.hml
       document.getElementById("overlay").classList.remove("show");
     }
 
-    // LINKS
+    // MENU
     document.getElementById("menu-dashboard").onclick = () => location.href = "dashboard.html";
     document.getElementById("menu-maquinas").onclick = () => location.href = "maquinas.html";
     document.getElementById("menu-vulnerabilidades").onclick = () => location.href = "vulnerabilidades.html";
@@ -306,6 +306,25 @@ dashboard.hml
     document.getElementById("menu-documentacoes").onclick = () => location.href = "documentacoes.html";
     document.getElementById("menu-noticias").onclick = () => location.href = "noticias.html";
     document.getElementById("menu-sair").onclick = () => { localStorage.clear(); location.href = "index.html"; };
+
+    // ------------------ NAVEGAÇÃO DOS CARDS ------------------
+
+    document.getElementById("card-total").onclick =
+      document.getElementById("card-seguras").onclick = () => {
+        location.href = "maquinas.html";
+      };
+
+    document.getElementById("card-vuln").onclick = () => {
+      location.href = "vulnerabilidades.html";
+    };
+
+    document.getElementById("card-riscos").onclick = () => {
+      location.href = "riscos.html";
+    };
+
+    document.getElementById("card-inc").onclick = () => {
+      location.href = "incidentes.html";
+    };
   </script>
 
 </body>
