@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Relatórios - Easy SOC</title>
+  <title>Relatórios de Segurança — Easy SOC</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -204,32 +204,12 @@
 
     /* ========================= RESPONSIVO ========================= */
     @media (max-width: 820px) {
-
-      .topbar {
-        display: flex;
-      }
-
-      .sidebar {
-        transform: translateX(-250px);
-      }
-
-      .sidebar.open {
-        transform: translateX(0);
-      }
-
-      .overlay.show {
-        display: block;
-      }
-
-      .content {
-        margin-left: 0;
-        padding: 15px;
-      }
-
-      h1 {
-        text-align: center;
-        font-size: 22px;
-      }
+      .topbar { display: flex; }
+      .sidebar { transform: translateX(-250px); }
+      .sidebar.open { transform: translateX(0); }
+      .overlay.show { display: block; }
+      .content { margin-left: 0; padding: 15px; }
+      h1 { text-align: center; font-size: 22px; }
     }
   </style>
 </head>
@@ -239,30 +219,29 @@
   <!-- TOPBAR MOBILE -->
   <div class="topbar">
     <div class="hamburger" onclick="abrirMenu()">☰</div>
-    <div class="topbar-title">Relatórios</div>
+    <div class="topbar-title">Relatórios de Segurança</div>
   </div>
 
-  <!-- OVERLAY -->
   <div id="overlay" class="overlay" onclick="fecharMenu()"></div>
 
   <!-- SIDEBAR -->
   <div id="sidebar" class="sidebar">
     <h2>Easy SOC</h2>
 
-    <a id="menu-dashboard">Dashboard</a>
-    <a id="menu-maquinas">Máquinas</a>
-    <a id="menu-vulnerabilidades">Vulnerabilidades</a>
-    <a id="menu-riscos">Riscos</a>
-    <a id="menu-incidentes">Incidentes</a>
-    <a id="menu-relatorios" class="active">Relatórios</a>
-    <a id="menu-documentacoes">Documentações</a>
-    <a id="menu-noticias">Notícias</a>
+    <a href="dashboard.html">Visão Geral</a>
+    <a href="maquinas.html">Dispositivos Monitorados</a>
+    <a href="vulnerabilidades.html">Falhas de Segurança</a>
+    <a href="riscos.html">Riscos de Segurança</a>
+    <a href="incidentes.html">Incidentes de Segurança</a>
+    <a class="active">Relatórios de Segurança</a>
+    <a href="documentacoes.html">Documentos e Guias</a>
+    <a href="noticias.html">Notícias de Segurança</a>
     <a id="menu-sair">Sair</a>
   </div>
 
   <!-- CONTEÚDO -->
   <div class="content">
-    <h1>Relatórios</h1>
+    <h1>Relatórios de Segurança</h1>
 
     <div class="cards">
       <div class="card" onclick="gerar('PDF')">
@@ -309,15 +288,6 @@
       document.getElementById("sidebar").classList.remove("open");
       document.getElementById("overlay").classList.remove("show");
     }
-
-    document.getElementById("menu-dashboard").onclick = () => location.href = "dashboard.html";
-    document.getElementById("menu-maquinas").onclick = () => location.href = "maquinas.html";
-    document.getElementById("menu-vulnerabilidades").onclick = () => location.href = "vulnerabilidades.html";
-    document.getElementById("menu-riscos").onclick = () => location.href = "riscos.html";
-    document.getElementById("menu-incidentes").onclick = () => location.href = "incidentes.html";
-    document.getElementById("menu-relatorios").onclick = () => location.href = "relatorios.html";
-    document.getElementById("menu-documentacoes").onclick = () => location.href = "documentacoes.html";
-    document.getElementById("menu-noticias").onclick = () => location.href = "noticias.html";
 
     document.getElementById("menu-sair").onclick = () => {
       localStorage.clear();

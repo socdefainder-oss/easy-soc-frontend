@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Easy SOC — Máquinas</title>
+  <title>Easy SOC — Dispositivos Monitorados</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -218,7 +218,7 @@
   <!-- TOPBAR MOBILE -->
   <div class="topbar">
     <div class="hamburger" onclick="abrirMenu()">☰</div>
-    <div class="topbar-title">Máquinas</div>
+    <div class="topbar-title">Dispositivos Monitorados</div>
   </div>
 
   <!-- OVERLAY -->
@@ -228,27 +228,27 @@
   <div id="sidebar" class="sidebar">
     <h2>Easy SOC</h2>
 
-    <a id="menu-dashboard">Dashboard</a>
-    <a id="menu-maquinas" class="active">Máquinas</a>
-    <a id="menu-vulnerabilidades">Vulnerabilidades</a>
-    <a id="menu-riscos">Riscos</a>
-    <a id="menu-incidentes">Incidentes</a>
-    <a id="menu-relatorios">Relatórios</a>
-    <a id="menu-documentacoes">Documentações</a>
-    <a id="menu-noticias">Notícias</a>
+    <a id="menu-dashboard">Visão Geral</a>
+    <a id="menu-maquinas" class="active">Dispositivos Monitorados</a>
+    <a id="menu-vulnerabilidades">Falhas de Segurança</a>
+    <a id="menu-riscos">Riscos de Segurança</a>
+    <a id="menu-incidentes">Incidentes de Segurança</a>
+    <a id="menu-relatorios">Relatórios de Segurança</a>
+    <a id="menu-documentacoes">Documentos e Guias</a>
+    <a id="menu-noticias">Notícias de Segurança</a>
     <a id="menu-sair">Sair</a>
   </div>
 
   <!-- CONTEÚDO -->
   <div class="content">
-    <h1>Máquinas</h1>
+    <h1>Dispositivos Monitorados</h1>
 
     <div class="busca-filtros">
-      <input id="busca" type="text" placeholder="Pesquisar máquina...">
+      <input id="busca" type="text" placeholder="Pesquisar dispositivo...">
       <select id="filtro">
-        <option value="todas">Todas</option>
-        <option value="seguro">Seguras</option>
-        <option value="infectado">Infectadas</option>
+        <option value="todas">Todos</option>
+        <option value="seguro">Seguros</option>
+        <option value="infectado">Infectados</option>
         <option value="risco">Com Risco</option>
       </select>
     </div>
@@ -260,7 +260,7 @@
   <div id="modal-bg" class="modal-bg">
     <div class="modal">
       <button class="close-btn" onclick="fecharModal()">Fechar</button>
-      <h2>Detalhes da Máquina</h2>
+      <h2>Detalhes do Dispositivo</h2>
       <div id="modal-conteudo"></div>
     </div>
   </div>
@@ -288,9 +288,11 @@
     document.getElementById("menu-relatorios").onclick = () => location.href = "relatorios.html";
     document.getElementById("menu-documentacoes").onclick = () => location.href = "documentacoes.html";
     document.getElementById("menu-noticias").onclick = () => location.href = "noticias.html";
-    document.getElementById("menu-sair").onclick = () => { localStorage.clear(); location.href = "index.html"; };
+    document.getElementById("menu-sair").onclick = () => {
+      localStorage.clear();
+      location.href = "index.html";
+    };
   </script>
 
 </body>
-
 </html>

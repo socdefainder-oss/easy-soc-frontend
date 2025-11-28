@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Riscos - Easy SOC</title>
+  <title>Riscos de Segurança — Easy SOC</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -198,7 +198,7 @@
   <!-- TOPBAR MOBILE -->
   <div class="topbar">
     <div class="hamburger" onclick="abrirMenu()">☰</div>
-    <div class="topbar-title">Riscos</div>
+    <div class="topbar-title">Riscos de Segurança</div>
   </div>
 
   <!-- OVERLAY -->
@@ -208,22 +208,22 @@
   <div id="sidebar" class="sidebar">
     <h2>Easy SOC</h2>
 
-    <a href="dashboard.html">Dashboard</a>
-    <a href="maquinas.html">Máquinas</a>
-    <a href="vulnerabilidades.html">Vulnerabilidades</a>
-    <a class="active">Riscos</a>
-    <a href="incidentes.html">Incidentes</a>
-    <a href="relatorios.html">Relatórios</a>
-    <a href="documentacoes.html">Documentações</a>
-    <a href="noticias.html">Notícias</a>
+    <a href="dashboard.html">Visão Geral</a>
+    <a href="maquinas.html">Dispositivos Monitorados</a>
+    <a href="vulnerabilidades.html">Falhas de Segurança</a>
+    <a class="active">Riscos de Segurança</a>
+    <a href="incidentes.html">Incidentes de Segurança</a>
+    <a href="relatorios.html">Relatórios de Segurança</a>
+    <a href="documentacoes.html">Documentos e Guias</a>
+    <a href="noticias.html">Notícias de Segurança</a>
     <a id="menu-sair">Sair</a>
   </div>
 
   <!-- CONTEÚDO -->
   <div class="content">
-    <h1 id="titulo-riscos">Riscos</h1>
+    <h1 id="titulo-riscos">Riscos de Segurança</h1>
 
-    <p id="loading">Carregando riscos...</p>
+    <p id="loading">Carregando riscos de segurança...</p>
 
     <div id="lista-riscos"></div>
   </div>
@@ -232,7 +232,7 @@
   <div id="modal-bg" class="modal-bg">
     <div class="modal">
       <button class="close-btn" onclick="fecharModal()">Fechar</button>
-      <h2>Detalhes</h2>
+      <h2>Detalhes do Risco</h2>
       <div id="modal-conteudo"></div>
     </div>
   </div>

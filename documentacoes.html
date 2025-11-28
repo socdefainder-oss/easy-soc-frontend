@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Documentações - Easy SOC</title>
+  <title>Documentos e Guias - Easy SOC</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -209,7 +209,7 @@
   <!-- TOPBAR MOBILE -->
   <div class="topbar">
     <div class="hamburger" onclick="abrirMenu()">☰</div>
-    <div class="topbar-title">Documentações</div>
+    <div class="topbar-title">Documentos e Guias</div>
   </div>
 
   <!-- OVERLAY -->
@@ -219,20 +219,20 @@
   <div id="sidebar" class="sidebar">
     <h2>Easy SOC</h2>
 
-    <a id="menu-dashboard">Dashboard</a>
-    <a id="menu-maquinas">Máquinas</a>
-    <a id="menu-vulnerabilidades">Vulnerabilidades</a>
-    <a id="menu-riscos">Riscos</a>
-    <a id="menu-incidentes">Incidentes</a>
-    <a id="menu-relatorios">Relatórios</a>
-    <a id="menu-documentacoes" class="active">Documentações</a>
-    <a id="menu-noticias">Notícias</a>
+    <a id="menu-dashboard">Visão Geral</a>
+    <a id="menu-maquinas">Dispositivos Monitorados</a>
+    <a id="menu-vulnerabilidades">Falhas de Segurança</a>
+    <a id="menu-riscos">Riscos de Segurança</a>
+    <a id="menu-incidentes">Incidentes de Segurança</a>
+    <a id="menu-relatorios">Relatórios de Segurança</a>
+    <a id="menu-documentacoes" class="active">Documentos e Guias</a>
+    <a id="menu-noticias">Notícias de Segurança</a>
     <a id="menu-sair">Sair</a>
   </div>
 
   <!-- CONTEÚDO -->
   <div class="content">
-    <h1>Documentações</h1>
+    <h1>Documentos e Guias</h1>
 
     <div class="docs-grid">
 
@@ -297,6 +297,7 @@
       document.getElementById("overlay").classList.remove("show");
     }
 
+    // LINKS ATUALIZADOS
     document.getElementById("menu-dashboard").onclick = () => location.href = "dashboard.html";
     document.getElementById("menu-maquinas").onclick = () => location.href = "maquinas.html";
     document.getElementById("menu-vulnerabilidades").onclick = () => location.href = "vulnerabilidades.html";
