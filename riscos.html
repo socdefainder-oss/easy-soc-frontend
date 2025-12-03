@@ -101,11 +101,67 @@
       font-size: 26px;
     }
 
-    /* CARDS */
+    /* ====== VISÃO DISPOSITIVOS ====== */
+    #resumo-dispositivos {
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .grid-dispositivos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .device-card {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      cursor: pointer;
+      text-align: center;
+      transition: 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+    }
+
+    .device-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+
+    .device-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .device-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #1a1f36;
+    }
+
+    .device-count {
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* ====== LISTA DE RISCOS (DETALHES DO DISPOSITIVO) ====== */
+    .lista-riscos {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
     .card-risco {
       background: white;
       padding: 15px;
-      margin-bottom: 15px;
+      margin-bottom: 0;
       border-radius: 12px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
@@ -114,24 +170,32 @@
       display: flex;
       justify-content: space-between;
       padding: 4px 0;
+      gap: 10px;
     }
 
-    .btn-ver {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      background: #4c8bfd;
-      color: white;
-      border-radius: 6px;
-      margin-top: 10px;
-      cursor: pointer;
+    .linha span {
+      text-align: right;
     }
 
     .nivel-alto { color: #dc3545; font-weight: bold; }
     .nivel-medio { color: #ffc107; font-weight: bold; }
     .nivel-baixo { color: #0d6efd; font-weight: bold; }
 
-    /* MODAL */
+    .btn-voltar {
+      background: #e5e7fb;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .btn-voltar:hover {
+      background: #d4d7f5;
+    }
+
+    /* MODAL (mantido caso você queira usar depois) */
     .modal-bg {
       display: none;
       position: fixed;
@@ -225,10 +289,21 @@
 
     <p id="loading">Carregando riscos de segurança...</p>
 
-    <div id="lista-riscos"></div>
+    <!-- VISÃO 1: DISPOSITIVOS -->
+    <div id="view-dispositivos">
+      <p id="resumo-dispositivos">Carregando dispositivos com riscos...</p>
+      <div id="grid-dispositivos" class="grid-dispositivos"></div>
+    </div>
+
+    <!-- VISÃO 2: RISCOS DO DISPOSITIVO SELECIONADO -->
+    <div id="view-detalhes" style="display:none;">
+      <button class="btn-voltar" onclick="voltarParaDispositivos()">← Voltar para dispositivos</button>
+      <h2 id="titulo-dispositivo">Riscos no dispositivo</h2>
+      <div id="lista-riscos" class="lista-riscos"></div>
+    </div>
   </div>
 
-  <!-- MODAL -->
+  <!-- MODAL (opcional) -->
   <div id="modal-bg" class="modal-bg">
     <div class="modal">
       <button class="close-btn" onclick="fecharModal()">Fechar</button>
