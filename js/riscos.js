@@ -73,7 +73,7 @@ async function carregarRiscos() {
       card.className = "device-card";
 
       card.innerHTML = `
-        <div class="device-icon">⚠️</div>
+        <div class="device-icon">🖥️</div>
         <div class="device-name">${nome}</div>
         <div class="device-count">${qtd} risco(s) de segurança</div>
       `;
