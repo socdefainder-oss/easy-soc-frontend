@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Easy SOC — GravityZone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --card-bg: #ffffff;
+      --primary: #1a73e8;
+      --sidebar-bg: #1a1f36;
+      --text-title: #1a1f36;
+      --text-sub: #4b587c;
+      --ok: #28a745;
+      --warn: #ffc107;
+      --crit: #dc3545;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+    }
+
+    /* ========================= TOPBAR ========================= */
+    .topbar {
+      width: 100%;
+      height: 60px;
+      background: var(--sidebar-bg);
+      color: white;
+      display: none;
+      align-items: center;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+    }
+
+    .hamburger {
+      font-size: 26px;
+      cursor: pointer;
+      margin-right: 15px;
+      background: none;
+      border: none;
+      color: white;
+      padding: 0;
+    }
+
+    .topbar-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    /* ========================= SIDEBAR ========================= */
+    .sidebar {
+      width: 240px;
+      background: var(--sidebar-bg);
+      color: white;
+      height: 100vh;
+      padding: 25px 20px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 22px;
+      letter-spacing: 1px;
+    }
+
+    .sidebar a {
+      padding: 13px;
+      display: block;
+      text-decoration: none;
+      color: #c7d1e8;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .sidebar a:hover { background: #2a3048; color: white; }
+    .sidebar a.active { background: var(--primary); color: white; }
+
+    /* ========================= OVERLAY ========================= */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      z-index: 900;
+    }
+
+    /* ========================= LAYOUT ========================= */
+    .content-wrapper {
+      margin-left: 260px;
+      padding: 30px;
+      width: calc(100% - 260px);
+    }
+
+    .content { max-width: 1280px; margin: 0 auto; }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-title);
+      margin: 0 0 6px;
+    }
+
+    .subtitle {
+      color: var(--text-sub);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    /* ========================= RESUMO CARDS ========================= */
+    .resumo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .resumo-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .resumo-card .num {
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .resumo-card .lbl {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 6px;
+    }
+
+    .resumo-card.ok .num   { color: var(--ok); }
+    .resumo-card.warn .num { color: var(--warn); }
+    .resumo-card.crit .num { color: var(--crit); }
+    .resumo-card.total .num { color: var(--primary); }
+
+    /* ========================= BARRA FERRAMENTAS ========================= */
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      align-items: center;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      padding: 9px 12px;
+      border: 1px solid #d0d7e3;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background: white;
+      outline: none;
+    }
+
+    .toolbar input { flex: 1 1 200px; min-width: 0; }
+
+    .btn-refresh {
+      padding: 9px 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+
+    .btn-refresh:hover { background: #1558c0; }
+    .btn-refresh:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* ========================= TABELA ========================= */
+    .table-wrapper {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      background: var(--sidebar-bg);
+      color: #c7d1e8;
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+    }
+
+    tbody tr { border-bottom: 1px solid #f0f2f7; cursor: pointer; transition: 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f7f9ff; }
+
+    tbody td {
+      padding: 11px 14px;
+      color: var(--text-title);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-ok   { background: #d4edda; color: #155724; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+    .badge-crit { background: #f8d7da; color: #721c24; }
+    .badge-on   { background: #d4edda; color: #155724; }
+    .badge-off  { background: #f8d7da; color: #721c24; }
+    .badge-na   { background: #e2e3e5; color: #555; }
+
+    /* ========================= ESTADO VAZIO / LOADING ========================= */
+    .state-msg {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-sub);
+      font-size: 15px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 3px solid #d0d7e3;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ========================= MODAL ========================= */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-bg.open { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 28px;
+      position: relative;
+    }
+
+    .modal h2 { margin: 0 0 18px; font-size: 18px; color: var(--text-title); }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .modal-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f2f7;
+      font-size: 14px;
+      gap: 8px;
+    }
+
+    .modal-row:last-child { border-bottom: none; }
+    .modal-row .key { color: var(--text-sub); flex-shrink: 0; }
+    .modal-row .val { font-weight: 600; text-align: right; word-break: break-all; }
+
+    .modal-section {
+      margin-top: 18px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-sub);
+      padding-bottom: 4px;
+      border-bottom: 2px solid var(--bg);
+    }
+
+    /* ========================= RESPONSIVO ========================= */
+    @media (max-width: 820px) {
+      .topbar      { display: flex; }
+      .sidebar     { transform: translateX(-260px); }
+      .sidebar.open { transform: translateX(0); }
+      .overlay.show { display: block; }
+
+      .content-wrapper {
+        margin-left: 0;
+        width: 100%;
+        padding: 14px;
+      }
+
+      table { font-size: 12px; }
+      thead th, tbody td { padding: 9px 10px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOPBAR MOBILE -->
+  <div class="topbar">
+    <button class="hamburger" onclick="abrirMenu()" aria-label="Menu">☰</button>
+    <div class="topbar-title">GravityZone</div>
+  </div>
+
+  <!-- OVERLAY -->
+  <div id="overlay" class="overlay" onclick="fecharMenu()"></div>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar" class="sidebar">
+    <h2>Easy SOC</h2>
+    <a id="menu-dashboard">Visão Geral</a>
+    <a id="menu-maquinas">Dispositivos Monitorados</a>
+    <a id="menu-vulnerabilidades">Falhas de Segurança</a>
+    <a id="menu-riscos">Riscos de Segurança</a>
+    <a id="menu-incidentes">Incidentes de Segurança</a>
+    <a id="menu-relatorios">Relatórios de Segurança</a>
+    <a id="menu-documentacoes">Documentos e Guias</a>
+    <a id="menu-noticias">Notícias de Segurança</a>
+    <a id="menu-gravityzone" class="active">GravityZone</a>
+    <a id="menu-sair">Sair</a>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="content-wrapper">
+    <div class="content">
+
+      <h1>GravityZone – Endpoints Gerenciados</h1>
+      <p class="subtitle" id="last-update">Carregando dados em tempo real da API Bitdefender...</p>
+
+      <!-- CARDS DE RESUMO -->
+      <div class="resumo-grid">
+        <div class="resumo-card total">
+          <div class="num" id="r-total">—</div>
+          <div class="lbl">Total gerenciados</div>
+        </div>
+        <div class="resumo-card ok">
+          <div class="num" id="r-ok">—</div>
+          <div class="lbl">OK</div>
+        </div>
+        <div class="resumo-card warn">
+          <div class="num" id="r-warn">—</div>
+          <div class="lbl">Atenção</div>
+        </div>
+        <div class="resumo-card crit">
+          <div class="num" id="r-crit">—</div>
+          <div class="lbl">Crítico</div>
+        </div>
+      </div>
+
+      <!-- BARRA DE FERRAMENTAS -->
+      <div class="toolbar">
+        <input id="busca" type="text" placeholder="Pesquisar hostname, IP, OS...">
+        <select id="filtro-status">
+          <option value="">Todos os status</option>
+          <option value="OK">OK</option>
+          <option value="Atenção">Atenção</option>
+          <option value="Crítico">Crítico</option>
+        </select>
+        <select id="filtro-os">
+          <option value="">Todos os sistemas</option>
+        </select>
+        <button class="btn-refresh" id="btn-refresh" onclick="carregar()">↺ Atualizar</button>
+      </div>
+
+      <!-- TABELA -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Hostname</th>
+              <th>Tipo</th>
+              <th>IP</th>
+              <th>Sistema Operacional</th>
+              <th>Política</th>
+              <th>Política Aplicada</th>
+              <th>Antimalware</th>
+              <th>HyperDetect</th>
+              <th>Sandbox</th>
+              <th>EDR</th>
+              <th>Firewall</th>
+              <th>Atualizado</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-body"></tbody>
+        </table>
+        <div id="state-container" class="state-msg">
+          <div class="spinner"></div>
+          <div>Buscando endpoints gerenciados...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE DETALHES -->
+  <div id="modal-bg" class="modal-bg">
+    <div class="modal">
+      <button class="modal-close" onclick="fecharModal()">✕</button>
+      <h2 id="modal-hostname">Detalhes</h2>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/mobile-layout.js"></script>
+
+  <script>
+    const API_BASE = "https://easy-soc-backend.onrender.com/api";
+
+    if (!localStorage.getItem("token")) {
+      window.location.href = "index.html";
+    }
+
+    /* =========================================================
+       MENU
+    ========================================================= */
+    function abrirMenu() {
+      document.getElementById("sidebar").classList.add("open");
+      document.getElementById("overlay").classList.add("show");
+    }
+
+    function fecharMenu() {
+      document.getElementById("sidebar").classList.remove("open");
+      document.getElementById("overlay").classList.remove("show");
+    }
+
+    const menuLinks = {
+      "menu-dashboard": "dashboard.html",
+      "menu-maquinas": "maquinas.html",
+      "menu-vulnerabilidades": "vulnerabilidades.html",
+      "menu-riscos": "riscos.html",
+      "menu-incidentes": "incidentes.html",
+      "menu-relatorios": "relatorios.html",
+      "menu-documentacoes": "documentacoes.html",
+      "menu-noticias": "noticias.html",
+      "menu-gravityzone": "gravityzone.html",
+    };
+
+    Object.entries(menuLinks).forEach(([id, href]) => {
+      document.getElementById(id).onclick = () => (location.href = href);
+    });
+
+    document.getElementById("menu-sair").onclick = () => {
+      localStorage.clear();
+      location.href = "index.html";
+    };
+
+    /* =========================================================
+       ESTADO GLOBAL
+    ========================================================= */
+    let todosEndpoints = [];
+
+    /* =========================================================
+       CARREGAR DADOS
+    ========================================================= */
+    async function carregar() {
+      const btn = document.getElementById("btn-refresh");
+      const stateContainer = document.getElementById("state-container");
+      const body = document.getElementById("tabela-body");
+
+      btn.disabled = true;
+      btn.textContent = "Carregando...";
+      body.innerHTML = "";
+      stateContainer.style.display = "block";
+      stateContainer.innerHTML = '<div class="spinner"></div><div>Consultando GravityZone API...</div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/gravityzone/endpoints`, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        });
+
+        if (res.status === 401) {
+          localStorage.clear();
+          location.href = "index.html";
+          return;
+        }
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detalhe || err.erro || "Erro desconhecido");
+        }
+
+        const data = await res.json();
+        todosEndpoints = data.endpoints || [];
+
+        // Resumo
+        document.getElementById("r-total").textContent = data.resumo.total;
+        document.getElementById("r-ok").textContent    = data.resumo.ok;
+        document.getElementById("r-warn").textContent  = data.resumo.atencao;
+        document.getElementById("r-crit").textContent  = data.resumo.critico;
+
+        // Atualizar filtro de OS
+        const osSet = [...new Set(todosEndpoints.map((e) => e.osSimplificado).filter(Boolean))].sort();
+        const filtroOS = document.getElementById("filtro-os");
+        filtroOS.innerHTML = '<option value="">Todos os sistemas</option>';
+        osSet.forEach((os) => {
+          const opt = document.createElement("option");
+          opt.value = os;
+          opt.textContent = os;
+          filtroOS.appendChild(opt);
+        });
+
+        // Data
+        const dt = new Date(data.lastUpdate);
+        document.getElementById("last-update").textContent =
+          `Última atualização: ${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR")} — ${todosEndpoints.length} endpoint(s) gerenciado(s)`;
+
+        renderTabela(todosEndpoints);
+        stateContainer.style.display = "none";
+
+      } catch (err) {
+        console.error(err);
+        stateContainer.innerHTML = `<div style="color:#dc3545">❌ Falha ao carregar: ${err.message}</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "↺ Atualizar";
+      }
+    }
+
+    /* =========================================================
+       RENDER TABELA
+    ========================================================= */
+    function badgeMod(val) {
+      if (val === true)  return '<span class="badge badge-on">Ativo</span>';
+      if (val === false) return '<span class="badge badge-off">Inativo</span>';
+      return '<span class="badge badge-na">N/A</span>';
+    }
+
+    function badgeStatus(s) {
+      if (s === "OK")      return '<span class="badge badge-ok">OK</span>';
+      if (s === "Atenção") return '<span class="badge badge-warn">Atenção</span>';
+      return '<span class="badge badge-crit">Crítico</span>';
+    }
+
+    function renderTabela(lista) {
+      const body = document.getElementById("tabela-body");
+      body.innerHTML = "";
+
+      if (lista.length === 0) {
+        document.getElementById("state-container").style.display = "block";
+        document.getElementById("state-container").textContent = "Nenhum endpoint encontrado.";
+        return;
+      }
+
+      document.getElementById("state-container").style.display = "none";
+
+      lista.forEach((ep) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${ep.hostname}</strong></td>
+          <td>${ep.tipo}</td>
+          <td>${ep.ip || "—"}</td>
+          <td>${ep.osSimplificado}</td>
+          <td title="${ep.policy}">${ep.policy ? ep.policy.substring(0, 28) + (ep.policy.length > 28 ? "…" : "") : "—"}</td>
+          <td>${badgeMod(ep.policyApplied)}</td>
+          <td>${badgeMod(ep.antimalware)}</td>
+          <td>${badgeMod(ep.hyperDetect)}</td>
+          <td>${badgeMod(ep.sandboxAnalyzer)}</td>
+          <td>${badgeMod(ep.advancedThreatControl)}</td>
+          <td>${badgeMod(ep.firewall)}</td>
+          <td>${ep.productOutdated ? '<span class="badge badge-warn">Desatualizado</span>' : '<span class="badge badge-on">Atualizado</span>'}</td>
+          <td>${badgeStatus(ep.status)}</td>
+        `;
+        tr.onclick = () => abrirModal(ep);
+        body.appendChild(tr);
+      });
+    }
+
+    /* =========================================================
+       FILTROS
+    ========================================================= */
+    function filtrar() {
+      const busca = document.getElementById("busca").value.toLowerCase();
+      const status = document.getElementById("filtro-status").value;
+      const os = document.getElementById("filtro-os").value;
+
+      const filtered = todosEndpoints.filter((ep) => {
+        const text = [ep.hostname, ep.ip, ep.os, ep.policy].join(" ").toLowerCase();
+        const matchBusca = !busca || text.includes(busca);
+        const matchStatus = !status || ep.status === status;
+        const matchOS = !os || ep.osSimplificado === os;
+        return matchBusca && matchStatus && matchOS;
+      });
+
+      renderTabela(filtered);
+    }
+
+    document.getElementById("busca").addEventListener("input", filtrar);
+    document.getElementById("filtro-status").addEventListener("change", filtrar);
+    document.getElementById("filtro-os").addEventListener("change", filtrar);
+
+    /* =========================================================
+       MODAL
+    ========================================================= */
+    function abrirModal(ep) {
+      document.getElementById("modal-hostname").textContent = ep.hostname;
+
+      const bool = (v) => (v === true ? "Sim" : v === false ? "Não" : "N/A");
+
+      const rows = [
+        ["Identificação", null],
+        ["Hostname", ep.hostname],
+        ["FQDN", ep.fqdn],
+        ["IP", ep.ip || "—"],
+        ["Tipo", ep.tipo],
+        ["Sistema Operacional", ep.os || "Não informado"],
+        ["Gerenciado com BEST", bool(ep.managedWithBest === "Sim")],
+        ["Produto Atualizado", ep.productOutdated ? "Não (desatualizado)" : "Sim"],
+        ["Política", null],
+        ["Nome da Política", ep.policy || "—"],
+        ["Política Aplicada", bool(ep.policyApplied)],
+        ["Módulos de Segurança", null],
+        ["Antimalware", bool(ep.antimalware)],
+        ["Controle Avançado de Ameaças", bool(ep.advancedThreatControl)],
+        ["HyperDetect (ML)", bool(ep.hyperDetect)],
+        ["Sandbox Analyzer", bool(ep.sandboxAnalyzer)],
+        ["Network Attack Defense", bool(ep.networkAttackDefense)],
+        ["Risk Management", bool(ep.riskManagement)],
+        ["Firewall", bool(ep.firewall)],
+        ["Controle de Conteúdo", bool(ep.contentControl)],
+        ["Controle de Aplicações", bool(ep.applicationControl)],
+        ["Criptografia", bool(ep.encryption)],
+        ["Controle de Dispositivo", bool(ep.deviceControl)],
+        ["Status Executivo", ep.status],
+      ];
+
+      let html = "";
+      rows.forEach(([key, val]) => {
+        if (val === null) {
+          html += `<div class="modal-section">${key}</div>`;
+        } else {
+          let valHtml = val;
+          if (val === "Sim") valHtml = '<span class="badge badge-on">Sim</span>';
+          else if (val === "Não" || val.startsWith("Não")) valHtml = `<span class="badge badge-off">${val}</span>`;
+          else if (key === "Status Executivo") {
+            if (val === "OK") valHtml = '<span class="badge badge-ok">OK</span>';
+            else if (val === "Atenção") valHtml = '<span class="badge badge-warn">Atenção</span>';
+            else valHtml = '<span class="badge badge-crit">Crítico</span>';
+          }
+          html += `<div class="modal-row"><span class="key">${key}</span><span class="val">${valHtml}</span></div>`;
+        }
+      });
+
+      document.getElementById("modal-body").innerHTML = html;
+      document.getElementById("modal-bg").classList.add("open");
+    }
+
+    function fecharModal() {
+      document.getElementById("modal-bg").classList.remove("open");
+    }
+
+    // Fechar modal clicando no fundo
+    document.getElementById("modal-bg").addEventListener("click", function (e) {
+      if (e.target === this) fecharModal();
+    });
+
+    /* =========================================================
+       INICIAR
+    ========================================================= */
+    carregar();
+  </script>
+
+</body>
+</html>

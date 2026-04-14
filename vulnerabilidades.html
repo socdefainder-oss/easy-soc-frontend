@@ -281,6 +281,7 @@
     <a href="relatorios.html">Relatórios de Segurança</a>
     <a href="documentacoes.html">Documentos e Guias</a>
     <a href="noticias.html">Notícias de Segurança</a>
+    <a id="menu-gravityzone">GravityZone</a>
     <a id="menu-sair">Sair</a>
   </div>
 
@@ -326,6 +327,7 @@
       document.getElementById("overlay").classList.remove("show");
     }
 
+    document.getElementById("menu-gravityzone").onclick = () => location.href = "gravityzone.html";
     document.getElementById("menu-sair").onclick = () => {
       localStorage.clear();
       location.href = "index.html";
