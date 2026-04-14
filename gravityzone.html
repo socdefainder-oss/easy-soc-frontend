@@ -158,6 +158,70 @@
     .resumo-card.crit .num { color: var(--crit); }
     .resumo-card.total .num { color: var(--primary); }
 
+    .section-title {
+      margin: 26px 0 12px;
+      color: var(--text-title);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .quad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .quad-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 14px;
+      border-left: 4px solid #d0d7e3;
+    }
+
+    .quad-card.vuln { border-left-color: #ff9f1c; }
+    .quad-card.risk { border-left-color: #dc3545; }
+
+    .quad-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .quad-host {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-title);
+      word-break: break-word;
+    }
+
+    .quad-count {
+      font-size: 12px;
+      background: #f4f6fb;
+      border-radius: 999px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+
+    .quad-list {
+      margin: 0;
+      padding-left: 16px;
+      color: var(--text-sub);
+      font-size: 12px;
+      line-height: 1.45;
+      max-height: 120px;
+      overflow: auto;
+    }
+
+    .quad-empty {
+      color: #6b778f;
+      font-size: 12px;
+      margin: 0;
+    }
+
     /* ========================= BARRA FERRAMENTAS ========================= */
     .toolbar {
       display: flex;
@@ -401,6 +465,14 @@
           <div class="num" id="r-crit">—</div>
           <div class="lbl">Crítico</div>
         </div>
+        <div class="resumo-card warn">
+          <div class="num" id="r-vuln">—</div>
+          <div class="lbl">Vulnerabilidades</div>
+        </div>
+        <div class="resumo-card crit">
+          <div class="num" id="r-riscos">—</div>
+          <div class="lbl">Riscos Identificados</div>
+        </div>
       </div>
 
       <!-- BARRA DE FERRAMENTAS -->
@@ -445,6 +517,12 @@
           <div>Buscando endpoints gerenciados...</div>
         </div>
       </div>
+
+      <h2 class="section-title">Vulnerabilidades por Máquina</h2>
+      <div id="quadrante-vulnerabilidades" class="quad-grid"></div>
+
+      <h2 class="section-title">Riscos por Máquina</h2>
+      <div id="quadrante-riscos" class="quad-grid"></div>
 
     </div>
   </div>
@@ -544,6 +622,8 @@
         document.getElementById("r-ok").textContent    = data.resumo.ok;
         document.getElementById("r-warn").textContent  = data.resumo.atencao;
         document.getElementById("r-crit").textContent  = data.resumo.critico;
+        document.getElementById("r-vuln").textContent  = data.resumo.totalVulnerabilidades ?? 0;
+        document.getElementById("r-riscos").textContent = data.resumo.totalRiscos ?? 0;
 
         // Atualizar filtro de OS
         const osSet = [...new Set(todosEndpoints.map((e) => e.osSimplificado).filter(Boolean))].sort();
@@ -562,6 +642,7 @@
           `Última atualização: ${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR")} — ${todosEndpoints.length} endpoint(s) gerenciado(s)`;
 
         renderTabela(todosEndpoints);
+        renderQuadrantes(todosEndpoints);
         stateContainer.style.display = "none";
 
       } catch (err) {
@@ -639,11 +720,62 @@
       });
 
       renderTabela(filtered);
+      renderQuadrantes(filtered);
     }
 
     document.getElementById("busca").addEventListener("input", filtrar);
     document.getElementById("filtro-status").addEventListener("change", filtrar);
     document.getElementById("filtro-os").addEventListener("change", filtrar);
+
+    function renderQuadrantes(lista) {
+      const vulnEl = document.getElementById("quadrante-vulnerabilidades");
+      const riskEl = document.getElementById("quadrante-riscos");
+
+      vulnEl.innerHTML = "";
+      riskEl.innerHTML = "";
+
+      const vulnerabilidades = [...lista]
+        .filter((ep) => (ep.qtdVulnerabilidades || 0) > 0)
+        .sort((a, b) => (b.qtdVulnerabilidades || 0) - (a.qtdVulnerabilidades || 0));
+
+      const riscos = [...lista]
+        .filter((ep) => (ep.qtdRiscos || 0) > 0)
+        .sort((a, b) => (b.riskScore || 0) - (a.riskScore || 0));
+
+      if (vulnerabilidades.length === 0) {
+        vulnEl.innerHTML = '<div class="quad-card vuln"><p class="quad-empty">Nenhuma vulnerabilidade derivada foi encontrada para os filtros atuais.</p></div>';
+      } else {
+        vulnerabilidades.forEach((ep) => {
+          const itens = (ep.vulnerabilidadesEncontradas || []).map((v) => `<li>${v}</li>`).join("");
+          vulnEl.innerHTML += `
+            <div class="quad-card vuln">
+              <div class="quad-top">
+                <div class="quad-host">${ep.hostname}</div>
+                <div class="quad-count">${ep.qtdVulnerabilidades} item(ns)</div>
+              </div>
+              <ul class="quad-list">${itens}</ul>
+            </div>
+          `;
+        });
+      }
+
+      if (riscos.length === 0) {
+        riskEl.innerHTML = '<div class="quad-card risk"><p class="quad-empty">Nenhum risco derivado foi encontrado para os filtros atuais.</p></div>';
+      } else {
+        riscos.forEach((ep) => {
+          const itens = (ep.riscosIdentificados || []).map((v) => `<li>${v}</li>`).join("");
+          riskEl.innerHTML += `
+            <div class="quad-card risk">
+              <div class="quad-top">
+                <div class="quad-host">${ep.hostname}</div>
+                <div class="quad-count">Score ${ep.riskScore || 0} • ${ep.qtdRiscos} risco(s)</div>
+              </div>
+              <ul class="quad-list">${itens}</ul>
+            </div>
+          `;
+        });
+      }
+    }
 
     /* =========================================================
        MODAL
