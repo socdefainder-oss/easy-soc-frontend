@@ -584,6 +584,60 @@
     ========================================================= */
     let todosEndpoints = [];
 
+    function deriveVulnFallback(ep) {
+      const vulns = [];
+      if (ep.policyApplied === false) vulns.push("Política não aplicada");
+      if (ep.antimalware === false) vulns.push("Antimalware inativo");
+      if (ep.advancedThreatControl === false) vulns.push("ATC/EDR inativo");
+      if (ep.networkAttackDefense === false) vulns.push("Network Attack Defense inativo");
+      if (ep.hyperDetect === false) vulns.push("HyperDetect inativo");
+      if (ep.sandboxAnalyzer === false) vulns.push("Sandbox Analyzer inativo");
+      if (ep.productOutdated === true) vulns.push("Produto desatualizado");
+      return vulns;
+    }
+
+    function deriveRiskFallback(ep) {
+      const risks = [];
+      if (ep.policyApplied === false) risks.push("Endpoint sem política aplicada");
+      if (ep.antimalware === false) risks.push("Ausência de proteção antimalware");
+      if (ep.advancedThreatControl === false) risks.push("Sem controle avançado de ameaças");
+      if (ep.networkAttackDefense === false) risks.push("Sem defesa contra ataques de rede");
+      if (ep.productOutdated === true) risks.push("Agente/assinaturas desatualizados");
+      if (ep.riskManagement === false) risks.push("Módulo de Risk Management inativo");
+      return risks;
+    }
+
+    function enrichEndpoint(ep) {
+      const vulnerabilidades = Array.isArray(ep.vulnerabilidadesEncontradas)
+        ? ep.vulnerabilidadesEncontradas
+        : deriveVulnFallback(ep);
+
+      const riscos = Array.isArray(ep.riscosIdentificados)
+        ? ep.riscosIdentificados
+        : deriveRiskFallback(ep);
+
+      let riskScore = Number.isFinite(ep.riskScore) ? ep.riskScore : null;
+      if (riskScore === null) {
+        riskScore = 0;
+        if (ep.policyApplied === false) riskScore += 30;
+        if (ep.antimalware === false) riskScore += 30;
+        if (ep.advancedThreatControl === false) riskScore += 15;
+        if (ep.networkAttackDefense === false) riskScore += 10;
+        if (ep.riskManagement === false) riskScore += 5;
+        if (ep.productOutdated === true) riskScore += 10;
+        riskScore = Math.min(riskScore, 100);
+      }
+
+      return {
+        ...ep,
+        vulnerabilidadesEncontradas: vulnerabilidades,
+        qtdVulnerabilidades: ep.qtdVulnerabilidades ?? vulnerabilidades.length,
+        riscosIdentificados: riscos,
+        qtdRiscos: ep.qtdRiscos ?? riscos.length,
+        riskScore,
+      };
+    }
+
     /* =========================================================
        CARREGAR DADOS
     ========================================================= */
@@ -615,15 +669,17 @@
         }
 
         const data = await res.json();
-        todosEndpoints = data.endpoints || [];
+        todosEndpoints = (data.endpoints || []).map(enrichEndpoint);
 
         // Resumo
         document.getElementById("r-total").textContent = data.resumo.total;
         document.getElementById("r-ok").textContent    = data.resumo.ok;
         document.getElementById("r-warn").textContent  = data.resumo.atencao;
         document.getElementById("r-crit").textContent  = data.resumo.critico;
-        document.getElementById("r-vuln").textContent  = data.resumo.totalVulnerabilidades ?? 0;
-        document.getElementById("r-riscos").textContent = data.resumo.totalRiscos ?? 0;
+        const fallbackVuln = todosEndpoints.reduce((acc, ep) => acc + (ep.qtdVulnerabilidades || 0), 0);
+        const fallbackRiscos = todosEndpoints.reduce((acc, ep) => acc + (ep.qtdRiscos || 0), 0);
+        document.getElementById("r-vuln").textContent  = data.resumo.totalVulnerabilidades ?? fallbackVuln;
+        document.getElementById("r-riscos").textContent = data.resumo.totalRiscos ?? fallbackRiscos;
 
         // Atualizar filtro de OS
         const osSet = [...new Set(todosEndpoints.map((e) => e.osSimplificado).filter(Boolean))].sort();
