@@ -64,6 +64,24 @@
       "  }",
       "  .back-btn { font-size: 20px; }",
       "  .content, .content-wrapper { padding-top: 14px; }",
+      "  .pull-refresh-indicator {",
+      "    position: fixed;",
+      "    left: 50%;",
+      "    top: calc(var(--safe-top) + 6px);",
+      "    transform: translate(-50%, -120%);",
+      "    z-index: 1300;",
+      "    background: #1a1f36;",
+      "    color: #fff;",
+      "    border-radius: 999px;",
+      "    font-size: 12px;",
+      "    line-height: 1;",
+      "    padding: 8px 12px;",
+      "    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);",
+      "    opacity: 0;",
+      "    transition: transform 0.18s ease, opacity 0.18s ease;",
+      "    pointer-events: none;",
+      "  }",
+      "  .pull-refresh-indicator.show { opacity: 1; transform: translate(-50%, 0); }",
       "}",
     ].join("\n");
 
@@ -134,9 +152,105 @@
     window.voltarTela = goBack;
   }
 
+  function setupPullToRefresh() {
+    if (window.matchMedia("(min-width: 821px)").matches) return;
+
+    if (document.getElementById("pull-refresh-indicator")) return;
+
+    var indicator = document.createElement("div");
+    indicator.id = "pull-refresh-indicator";
+    indicator.className = "pull-refresh-indicator";
+    indicator.textContent = "Puxe para atualizar";
+    document.body.appendChild(indicator);
+
+    var startY = null;
+    var dragDistance = 0;
+    var pulling = false;
+    var threshold = 92;
+
+    function isAtTop() {
+      return window.scrollY <= 0 && document.documentElement.scrollTop <= 0;
+    }
+
+    function showIndicator(distance) {
+      var progress = Math.min(distance / threshold, 1);
+      indicator.classList.add("show");
+      indicator.style.opacity = String(Math.max(0.45, progress));
+      indicator.style.transform = "translate(-50%, " + (progress * 10) + "px)";
+      indicator.textContent = distance >= threshold ? "Solte para atualizar" : "Puxe para atualizar";
+    }
+
+    function hideIndicator() {
+      indicator.classList.remove("show");
+      indicator.style.transform = "translate(-50%, -120%)";
+      indicator.style.opacity = "0";
+      indicator.textContent = "Puxe para atualizar";
+    }
+
+    document.addEventListener(
+      "touchstart",
+      function (e) {
+        if (e.touches.length !== 1) return;
+        startY = e.touches[0].clientY;
+        dragDistance = 0;
+        pulling = isAtTop();
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      "touchmove",
+      function (e) {
+        if (!pulling || startY === null || e.touches.length !== 1) return;
+
+        var currentY = e.touches[0].clientY;
+        dragDistance = Math.max(0, currentY - startY);
+
+        if (dragDistance > 0) {
+          showIndicator(dragDistance);
+          e.preventDefault();
+        }
+      },
+      { passive: false }
+    );
+
+    document.addEventListener(
+      "touchend",
+      function () {
+        if (!pulling) {
+          startY = null;
+          return;
+        }
+
+        var shouldRefresh = dragDistance >= threshold;
+        startY = null;
+        dragDistance = 0;
+        pulling = false;
+        hideIndicator();
+
+        if (shouldRefresh) {
+          location.reload();
+        }
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      "touchcancel",
+      function () {
+        startY = null;
+        dragDistance = 0;
+        pulling = false;
+        hideIndicator();
+      },
+      { passive: true }
+    );
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     ensureViewportFitCover();
     injectMobileStyles();
     enhanceTopbar();
+    setupPullToRefresh();
   });
 })();
